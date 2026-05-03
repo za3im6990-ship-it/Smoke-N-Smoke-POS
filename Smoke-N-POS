@@ -1,1 +1,33 @@
+name: Build APK
 
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Unzip project
+        run: |
+          unzip Smoke_N_Smoke_POS_Android_Project_APK_Builder.zip -d extracted
+
+      - name: Build APK
+        run: |
+          cd extracted/SmokeShopPOS_Android_App
+          gradle assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Smoke-N-Smoke-POS-APK
+          path: extracted/SmokeShopPOS_Android_App/app/build/outputs/apk/debug/*.apk
